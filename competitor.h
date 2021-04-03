@@ -9,7 +9,7 @@ public:
     int id;
     QString name;
     int score=0;
-    int panalty;
+    int panalty=0;
 };
 
 #endif // COMPETITOR_H

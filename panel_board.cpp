@@ -35,11 +35,33 @@ void Panel_board::update_result_table(){
         for(int j=0;j<8;j++){
             competitors[i].score+=score_by_comp[i][j];
         }
+        competitors[i].score+=competitors[i].panalty;
         QTableWidgetItem* it2 =new QTableWidgetItem();
         it2->setText(QString::number(competitors[i].score));
         result_table->setItem(1,i,it2);
         //result_table->item(1,i)->setText(QString::number(competitors[i].score));
     }
+
+}
+void Panel_board::init_panalty_board(){
+    panalty_dial=new QDialog(this);
+    panalty_dial->setWindowTitle(QString::fromLocal8Bit("罚分"));
+    QVBoxLayout* temp_l=new QVBoxLayout();
+    temp_namelist=new QComboBox();
+    for(int i=0;i<8;i++){
+        temp_namelist->addItem(competitors[i].name);
+    }
+    temp_l->addWidget(temp_namelist);
+    temp_l->addWidget(new QLabel(QString::fromLocal8Bit("添加奖惩分： （奖励分为负，罚分为正）")));
+    panalty_edit=new QLineEdit(QString::number(0));
+    temp_l->addWidget(panalty_edit);
+    panalty_ok_button=new QPushButton(QString::fromLocal8Bit("确定"));
+    temp_l->addWidget(panalty_ok_button);
+    connect(panalty_ok_button,SIGNAL(clicked()),this,SLOT(finish_adding_panalty()));
+    panalty_dial->setLayout(temp_l);
+
+}
+void Panel_board::init_result_table(){
 
 }
 void Panel_board::add_comp_result(){
@@ -78,6 +100,18 @@ void Panel_board::finish_adding_result(){
         alert->setText(QString::fromLocal8Bit("比赛场次不合法"));
         alert->exec();
     }
+}
+
+void Panel_board::add_panalty(){
+    panalty_dial->exec();
+}
+
+void Panel_board::finish_adding_panalty(){
+    int temp_panalty=panalty_edit->text().toInt();
+    int temp_id=temp_namelist->currentIndex();
+    competitors[temp_id].panalty-=temp_panalty;
+    update_result_table();
+    panalty_dial->accept();
 }
 Panel_board::Panel_board(QWidget *parent) : QWidget(parent)
 {
@@ -128,7 +162,6 @@ Panel_board::Panel_board(QWidget *parent) : QWidget(parent)
     add_result_layout->addWidget(add_result_yes_button,4,3);
     connect(add_result_yes_button,SIGNAL(clicked()), this, SLOT(finish_adding_result()));
 
-    add_comp_result_dial->setLayout(add_result_layout);
     QVBoxLayout* m=new QVBoxLayout();
     QWidget *tab =new QWidget();
     QWidget *buttons =new QWidget();
@@ -170,6 +203,7 @@ Panel_board::Panel_board(QWidget *parent) : QWidget(parent)
             table->setCellWidget(i,j+1,cell_widgets[i][j]);
         }
     }
+
     QLabel* label=new QLabel(QString::fromLocal8Bit("选手总积分"));
     result_table->setFixedHeight(120);
     layout->addWidget(table,0,0);
@@ -180,6 +214,11 @@ Panel_board::Panel_board(QWidget *parent) : QWidget(parent)
     m->addWidget(tab);
     m->addWidget(buttons);
     this->setLayout(m);
+    connect(add_result_yes_button,SIGNAL(clicked()), this, SLOT(finish_adding_result()));
+    connect(add_comp_button,SIGNAL(clicked()),this,SLOT(add_panalty()));
+    add_comp_result_dial->setLayout(add_result_layout);
+
+    init_result_table();
 
 }
 
@@ -194,6 +233,7 @@ void Panel_board::set_names(QStringList *names){
         it2->setText(competitors[i].name);
         result_table->setItem(0,i,it2);
     }
+    init_panalty_board();
 }
 
 

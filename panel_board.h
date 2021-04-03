@@ -21,6 +21,8 @@ public:
 public slots:
     void add_comp_result();
     void finish_adding_result();
+    void add_panalty();
+    void finish_adding_panalty();
 private:
     int score_by_comp[8][8];
     void set_cells();
@@ -31,6 +33,8 @@ private:
     Competitor competitors[8];
     void set_roles();
     void update_result_table();
+    void init_result_table();
+    void init_panalty_board();
     Role roles[4];
     int comp_num=8;
     QDialog* add_comp_result_dial;
@@ -45,6 +49,10 @@ private:
     QCheckBox* finsh_in_one_round;
     QComboBox *role_boxes[8][8];
     Competition competitions[8];
+    QPushButton* panalty_ok_button;
+    QComboBox* temp_namelist;
+    QLineEdit* panalty_edit;
+    QDialog* panalty_dial;
 signals:
 
 };
