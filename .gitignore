@@ -1,0 +1,6 @@
+*.Debug
+*.Release
+*.zip
+*.obj
+*.exe
+*.pdb

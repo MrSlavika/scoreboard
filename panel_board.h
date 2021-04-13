@@ -48,6 +48,7 @@ private:
     QCheckBox* role0_vs_role2_vs_role3;
     QCheckBox* finsh_in_one_round;
     QComboBox *role_boxes[8][8];
+
     Competition competitions[8];
     QPushButton* panalty_ok_button;
     QComboBox* temp_namelist;
